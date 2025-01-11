@@ -146,7 +146,7 @@ uint8_t gt9xxx_init(void)
     {
         return 1;   /* �����Ǵ������õ���GT911/9147/1158/9271�����ʼ��ʧ�ܣ���Ӳ���鿴����IC�ͺ��Լ��鿴ʱ�����Ƿ���ȷ */
     }
-    printf("CTP ID:%s\r\n", temp);                          /* ��ӡID */
+    //printf("CTP ID:%s\r\n", temp);                          /* ��ӡID */
     
     if (strcmp((char *)temp, "9271") == 0)                  /* ID==9271, ֧��10�㴥�� */
     {

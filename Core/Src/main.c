@@ -251,7 +251,7 @@ int main(void)
   key_init();
   sdram_init();
   lcd_init();
-  tp_dev.init();          /* 触摸屏初始化 */
+  tp_dev.init();          /* 触摸屏初始化 注意：IAR没有microlib，必须注释掉ft5206和gt9xxx中所有的printf函数，否则MCU上电自主运行时会卡死在printf处 */
   /* USER CODE END Init */
 
   /* Configure the system clock */
