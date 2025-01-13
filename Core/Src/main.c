@@ -71,7 +71,7 @@ lv_obj_t *btn_scr2_prev_page;
 lv_obj_t *dc_bus_voltage_label;
 float temp = 0;   /* MCU internal temperature */
 float u_dc = 0;   /* DC bus voltage*/
-#define TEMP_SAMPLING_TIME 500    /* LVGL timer trigger interval */
+#define TEMP_SAMPLING_TIME 500    /* LVGL timer trigger interval, in ms */
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
