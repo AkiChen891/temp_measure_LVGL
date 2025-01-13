@@ -36,19 +36,16 @@ C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\LTDC\BrowseInfo\C
   C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_adc.h \
   C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_adc.h \
   C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_adc_ex.h \
-  C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_dma2d.h \
   C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_flash.h \
   C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_flash_ex.h \
   C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_flash_ramfunc.h \
-  C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_sram.h \
-  C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_ll_fmc.h \
-  C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_sdram.h \
-  C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_ltdc.h \
-  C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_ltdc_ex.h \
   C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr.h \
   C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_pwr_ex.h \
   C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim.h \
   C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h \
   C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_uart.h \
   C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Core\Inc\main.h \
-  C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Core\Inc\ltdc.h
+  C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Core\Inc\ltdc.h \
+  C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_ltdc.h \
+  C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_ltdc_ex.h \
+  C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_dma2d.h

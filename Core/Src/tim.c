@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "tim.h"
+
 /* USER CODE BEGIN 0 */
 #include "lvgl.h"   /* 引用LGVL GUI以分配LVGL timebase */
 /* USER CODE END 0 */

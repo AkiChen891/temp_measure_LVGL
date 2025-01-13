@@ -21,15 +21,15 @@ C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM/../Drivers/CMSIS/
 -I
 C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM/../Drivers/CMSIS/Include
 -I
-C:\Users\heuch\Desktop\ARM\STM32\Study\LTDC - LVGL\Middlewares\LVGL\GUI\
+C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Middlewares\LVGL\GUI
 -I
-C:\Users\heuch\Desktop\ARM\STM32\Study\LTDC - LVGL\Middlewares\LVGL\GUI\lvgl\
+C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Middlewares\LVGL\GUI\lvgl
 -I
-C:\Users\heuch\Desktop\ARM\STM32\Study\LTDC - LVGL\Middlewares\LVGL\GUI\lvgl\src\
+C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Middlewares\LVGL\GUI\lvgl\src
 -I
-C:\Users\heuch\Desktop\ARM\STM32\Study\LTDC - LVGL\Middlewares\LVGL\GUI\lvgl\examples\porting\
+C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Middlewares\LVGL\GUI\lvgl\examples\porting
 -I
-C:\Users\heuch\Desktop\ARM\STM32\Study\LTDC - LVGL\Middlewares\images\
+C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\EWARM\..\Middlewares\images
 -I
 D:\IAR Systems\Embedded Workbench 9.2\arm\inc\c\aarch32
 -I
@@ -47,15 +47,15 @@ C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\Drivers\CMSIS\Device\ST
 -I
 C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\Drivers\CMSIS\Include
 -I
-C:\Users\heuch\Desktop\ARM\STM32\Study\LTDC - LVGL\Middlewares\LVGL\GUI
+C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\Middlewares\LVGL\GUI
 -I
-C:\Users\heuch\Desktop\ARM\STM32\Study\LTDC - LVGL\Middlewares\LVGL\GUI\lvgl
+C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\Middlewares\LVGL\GUI\lvgl
 -I
-C:\Users\heuch\Desktop\ARM\STM32\Study\LTDC - LVGL\Middlewares\LVGL\GUI\lvgl\src
+C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\Middlewares\LVGL\GUI\lvgl\src
 -I
-C:\Users\heuch\Desktop\ARM\STM32\Study\LTDC - LVGL\Middlewares\LVGL\GUI\lvgl\examples\porting
+C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\Middlewares\LVGL\GUI\lvgl\examples\porting
 -I
-C:\Users\heuch\Desktop\ARM\STM32\Study\LTDC - LVGL\Middlewares\images
+C:\Users\heuch\Desktop\ARM\STM32\Study\temp_measure_LVGL\Middlewares\images
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
 -D__CHAR_MIN__=0

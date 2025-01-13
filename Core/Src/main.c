@@ -68,15 +68,14 @@ lv_obj_t *screen1;
 lv_obj_t *screen2;
 lv_obj_t *btn_scr1_next_page;
 lv_obj_t *btn_scr2_prev_page;
-float temp = 0;   /* 检测到的温度值 */
-
-#define TEMP_SAMPLING_TIME 500
+lv_obj_t *dc_bus_voltage_label;
+float temp = 0;   /* MCU internal temperature */
+float u_dc = 0;   /* DC bus voltage*/
+#define TEMP_SAMPLING_TIME 500    /* LVGL timer trigger interval */
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-void create_screen_1(void);
-void create_screen_2(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -85,91 +84,101 @@ void create_screen_2(void);
 /* USER CODE BEGIN 0 */
 
 /** 
-    @brief LVGL定时器更新回调
-    @param timer:定时器事件
-    @note 用于循环采集温度值并更新label。注意：LVGL默认不支持显示float和double类型，要显示则必须在lv_conf.h中打开LV_SPRINTF_CUSTOM
+    @brief LVGL timer trigger callback
+    @param timer:LVGL timer event
+    @note LVGL does not support the display of float and double types by default. To display them, must enable LV_SPRINTF_CUSTOM in lv_conf.h
     @return NULL
 */
 void temp_timer_update_callback(lv_timer_t *timer)
 {
   static lv_coord_t last_point = 0;
-  static lv_chart_series_t *ser1;
-  temp = (float)read_temperature();   /* 获取温度 */
-  lv_label_set_recolor(temp_label, true);
+  static lv_chart_series_t *ser1;   /* new chart series */
+  temp = read_values(10)[2];   /* read averaged temperature from ADC */
+  u_dc = read_values(10)[0];   /* read averaged dc bus voltage from ADC */
+  lv_label_set_recolor(temp_label, true);   /* enable temp_label recolor */
+  lv_label_set_recolor(dc_bus_voltage_label, true);   /* enable dc bus voltage label recolor */
 
-  if (temp < 40)    /* 温度小于40度为绿色 */
+  if (temp < 40)    /* label set to GREEN if temp < 40 deg */
   {
-    lv_label_set_text_fmt(temp_label, "Temperature is: #00FF00 %.2f# C", temp);    /* 更新label，温度数值为绿色 */
+    lv_label_set_text_fmt(temp_label, "Temperature is: #00FF00 %.2f# C", temp);    /* update label */
   }
-  else              /* 温度大于40度为红色 */
+  else              /* label set to RED if temp > 40 deg */
   {
-    lv_label_set_text_fmt(temp_label, "Temperature is: #FF0000 %.2f# C", temp);    /* 更新label，温度数值为红色 */
+    lv_label_set_text_fmt(temp_label, "Temperature is: #FF0000 %.2f# C", temp);    /* update label */
   }
+
+  lv_label_set_text_fmt(dc_bus_voltage_label, "DC bus voltage is: %.2f V", u_dc);
   
-  /* 为chart创建新序列，Y轴变量为temp，颜色为灰色 */
-  if (ser1 == NULL)
-  {
-    ser1 = lv_chart_add_series(temp_chart, lv_palette_main(LV_PALETTE_GREY), LV_CHART_AXIS_PRIMARY_Y);
-  }
-  lv_chart_set_next_value(temp_chart, ser1, temp);    /* 将temp更新为序列的下一个值 */
-  lv_chart_refresh(temp_chart);                       /* 更新chart */
+  // /* create new series for chart1 as Y axis, color GREY */
+  // if (ser1 == NULL)
+  // {
+  //   ser1 = lv_chart_add_series(temp_chart, lv_palette_main(LV_PALETTE_GREY), LV_CHART_AXIS_PRIMARY_Y);
+  // }
+  // lv_chart_set_next_value(temp_chart, ser1, temp);    /* Update temp to the next value in ser1 */
+  // lv_chart_refresh(temp_chart);                       /* update chart */
 }
 
 /** 
-    @brief LVGL button 更新回调
-    @param e:指定输入的event
-    @note 此处切换屏幕不能直接lv_obj_delete，必须通过obj_flag操作，否则切屏后卡死，原因未知
+    @brief LVGL button event callback
+    @param e: event
+    @note DO NOT use other methods to switch the page except add/clear flag, otherwise program may freeze
     @return NULL
 */
 static void btn_switch_scr_cb(lv_event_t *e)
 {
   lv_obj_t *target = lv_event_get_target(e);
 
-  if (target == btn_scr1_next_page)   /* 如果事件触发源来自btn_scr1_next_page */
+  if (target == btn_scr1_next_page)   /* if event is triggered by btn_scr1_next_page */
   {
-    lv_obj_add_flag(screen1, LV_OBJ_FLAG_HIDDEN);   /* 隐藏screen1 */
-    lv_obj_clear_flag(screen2, LV_OBJ_FLAG_HIDDEN); /* 显示screen2 */
-    lv_scr_load_anim(screen2, LV_SCR_LOAD_ANIM_MOVE_LEFT, 200, 0, false);  /* 动态加载screen2 */
+    lv_obj_add_flag(screen1, LV_OBJ_FLAG_HIDDEN);   /* hid screen1 */
+    lv_obj_clear_flag(screen2, LV_OBJ_FLAG_HIDDEN); /* display screen2 */
+    lv_scr_load_anim(screen2, LV_SCR_LOAD_ANIM_MOVE_LEFT, 200, 0, false);  /* dynamic load screen2 */
   }
-  else if (target == btn_scr2_prev_page)    /* 如果事件触发源来自btn_scr2_prev_page */
+  else if (target == btn_scr2_prev_page)    /* if event is triggered by btn_scr2_prev_page */
   {
-    lv_obj_add_flag(screen2, LV_OBJ_FLAG_HIDDEN);     /* 隐藏screen2 */
-    lv_obj_clear_flag(screen1, LV_OBJ_FLAG_HIDDEN);   /* 显示screen1 */
-    lv_scr_load_anim(screen1, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 200, 0, false);  /* 动态加载screen1 */
+    lv_obj_add_flag(screen2, LV_OBJ_FLAG_HIDDEN);     /* hid screen2 */
+    lv_obj_clear_flag(screen1, LV_OBJ_FLAG_HIDDEN);   /* display screen1 */
+    lv_scr_load_anim(screen1, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 200, 0, false);  /* dynamic load screen1 */
   }
 }
 
 /** 
-    @brief LVGL 创建屏幕1作为父类
-    @param 无
+    @brief LVGL create screen 1 as parent
+    @param NULL
     @return NULL
 */
 void create_screen_1(void)
 {
-  /* 创建屏幕1 */
+  /* create screen 1 */
   screen1 = lv_obj_create(NULL);
-  lv_obj_set_size(screen1, 1280, 800);    /* 界面大小等于屏幕大小 */
+  lv_obj_set_size(screen1, 1280, 800);    /* object size = screen size */
 
-  /* 屏幕1控件建立 */
-  /* 创建标题label */
+  /* screen 1 widgets */
+  /* create title label */
   title = lv_label_create(screen1);
   lv_label_set_text_fmt(title, "MVDC IPS Fault detection system");
   lv_obj_align(title, LV_ALIGN_TOP_MID, 0, lv_pct(3));
   lv_obj_set_style_text_font(title, &lv_font_montserrat_40, NULL);
 
-  /* 创建未收到数据前的温度label */
+  /* create temperature label */
   temp_label = lv_label_create(screen1);
   lv_label_set_text_fmt(temp_label, "Temperature is: -- C");
   lv_obj_align(temp_label, LV_ALIGN_TOP_LEFT, lv_pct(10), lv_pct(15));
   lv_obj_set_style_text_font(temp_label, &lv_font_montserrat_32, NULL);
 
-  /* 创建采样时间提示label */
+  /* create dc bus voltage label */
+  dc_bus_voltage_label = lv_label_create(screen1);
+  lv_label_set_text_fmt(dc_bus_voltage_label, "DC bus voltage is: -- V");
+  lv_obj_align(dc_bus_voltage_label, LV_ALIGN_TOP_LEFT, lv_pct(10), lv_pct(25));
+  lv_obj_set_style_text_font(dc_bus_voltage_label, &lv_font_montserrat_32, NULL);
+
+  /* create sampling time label */
   sampling_time = lv_label_create(screen1);
   lv_label_set_text_fmt(sampling_time, "Current sampling interval: %d ms", TEMP_SAMPLING_TIME);
   lv_obj_align(sampling_time, LV_ALIGN_BOTTOM_MID, 0, 0);
   lv_obj_set_style_text_font(sampling_time, &lv_font_montserrat_32, NULL);
 
-  /* 滚动条，会占用约15%的CPU资源，尽量不要启用 */
+  /* scroll bar, may occupt 15% CPU resource, DO NOT enable unless necessary */
   // scroll_test_label = lv_label_create(lv_scr_act());
   // lv_label_set_long_mode(scroll_test_label, LV_LABEL_LONG_SCROLL_CIRCULAR);
   // lv_obj_set_width(scroll_test_label, 300);
@@ -177,41 +186,46 @@ void create_screen_1(void)
   // lv_obj_align(scroll_test_label, LV_ALIGN_BOTTOM_MID, 0, 0);
   // lv_obj_set_style_text_font(scroll_test_label, &lv_font_montserrat_32, NULL);
 
-  /* 创建chart */
-  temp_chart = lv_chart_create(screen1);
-  lv_obj_set_size(temp_chart, 900, 300);    /* chart大小 */
-  lv_obj_center(temp_chart);
-  lv_chart_set_type(temp_chart, LV_CHART_TYPE_LINE);    /* 折线图 */
-  lv_chart_set_range(temp_chart, LV_CHART_AXIS_PRIMARY_Y, 25, 45);    /* Y轴刻度范围: 25~45 */
-  lv_chart_set_axis_tick(temp_chart, LV_CHART_AXIS_PRIMARY_Y, 5, 4, 10, LV_PALETTE_GREY, true, 70); /* Y轴刻度条设置 */
-  lv_chart_set_point_count(temp_chart, 100);    /* chart内最多显示100个采样点 */
+  /* create temperature chart */
+  // temp_chart = lv_chart_create(screen1);
+  // lv_obj_set_size(temp_chart, 900, 300);    /* chart size */
+  // lv_obj_center(temp_chart);
+  // lv_chart_set_type(temp_chart, LV_CHART_TYPE_LINE);    /* chart type */
+  // lv_chart_set_range(temp_chart, LV_CHART_AXIS_PRIMARY_Y, 25, 45);    /* Y axis range: 25 - 45 */
+  // lv_chart_set_axis_tick(temp_chart, LV_CHART_AXIS_PRIMARY_Y, 5, 4, 10, LV_PALETTE_GREY, true, 70); /* Y axis style setting */
+  // lv_chart_set_point_count(temp_chart, 100);    /* max 100 samping points in chart */
 
-  /* 创建“下一页”button */
+  /* chreate "next page" button for screen1 */
   btn_scr1_next_page = lv_obj_create(screen1);
   lv_obj_set_size(btn_scr1_next_page, 100, 50);
   lv_obj_align(btn_scr1_next_page, LV_ALIGN_TOP_RIGHT, 0, 0);
-  lv_obj_t *btn_scr1_next_page_label = lv_label_create(btn_scr1_next_page);          /* button上的label，作为button的子类 */
+  lv_obj_t *btn_scr1_next_page_label = lv_label_create(btn_scr1_next_page);          /* label of this button, as child */
   lv_label_set_text(btn_scr1_next_page_label, "Next");
   lv_obj_set_style_text_font(btn_scr1_next_page_label, &lv_font_montserrat_22, 0);
-  lv_obj_clear_flag(btn_scr1_next_page, LV_OBJ_FLAG_SCROLLABLE);        /* 禁用滚动条 */
+  lv_obj_clear_flag(btn_scr1_next_page, LV_OBJ_FLAG_SCROLLABLE);        /* disable scroll bar */
   lv_obj_center(btn_scr1_next_page_label);
-  lv_obj_set_style_bg_color(btn_scr1_next_page, lv_palette_main(LV_PALETTE_GREY), NULL);    /* button填充为灰色 */
-  lv_obj_add_event_cb(btn_scr1_next_page, btn_switch_scr_cb, LV_EVENT_CLICKED, NULL);       /* 添加点击事件后的callback */
+  lv_obj_set_style_bg_color(btn_scr1_next_page, lv_palette_main(LV_PALETTE_GREY), NULL);    /* filled button with GREY */
+  lv_obj_add_event_cb(btn_scr1_next_page, btn_switch_scr_cb, LV_EVENT_CLICKED, NULL);       /* link button event callback after clicked */
 }
 
+/** 
+    @brief LVGL create screen 2 as parent
+    @param NULL
+    @return NULL
+*/
 void create_screen_2(void)
 {
-  /* 创建屏幕2 */
+  /* create screen 2 */
   screen2 = lv_obj_create(NULL);
   lv_obj_set_size(screen2, 1280, 800);
 
-  /* 创建图像，来源为heu_logo.c */
+  /* create image, from heu_logo.c */
   lv_obj_t *bg_img = lv_img_create(screen2);
   lv_img_set_src(bg_img, &heu_logo);
   lv_obj_align(bg_img, LV_ALIGN_CENTER, 0, 0);
-  lv_obj_set_style_opa(bg_img, LV_OPA_50, 0);   /* 不透明度为50% */
+  lv_obj_set_style_opa(bg_img, LV_OPA_50, 0);   /* Opacity is 50% */
 
-  /* 创建"上一页" button */
+  /* create "prev page" button for screen2 */
   btn_scr2_prev_page = lv_obj_create(screen2);
   lv_obj_set_size(btn_scr2_prev_page, 100, 50);
   lv_obj_align(btn_scr2_prev_page, LV_ALIGN_TOP_LEFT, 0, 0);
@@ -244,14 +258,14 @@ int main(void)
 
   /* USER CODE BEGIN Init */
   delay_init(180);
-  lv_init();    /* 初始化LVGL图形库 */
-  lv_port_disp_init();    /* 注册显示设备，必须在lv_init之后调用 */
-  lv_port_indev_init();   /* 注册输入设备 */
+  lv_init();    /* initialize LVGL */
+  lv_port_disp_init();    /* reg disp equipment */
+  lv_port_indev_init();   /* reg indev equipment */
   led_init();
   key_init();
   sdram_init();
   lcd_init();
-  tp_dev.init();          /* 触摸屏初始化 注意：IAR没有microlib，必须注释掉ft5206和gt9xxx中所有的printf函数，否则MCU上电自主运行时会卡死在printf处 */
+  tp_dev.init();          /* initialize indev screen, NOTE：IAR does not have microlib, DO delete printf() in ft5206.c and gt9xxx.c otherwise MCU may freeze */
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -270,10 +284,10 @@ int main(void)
   /* USER CODE BEGIN 2 */
   create_screen_1();
   create_screen_2();
-  lv_scr_load(screen1);    /* 首次开机加载屏幕1 */
+  lv_scr_load(screen1);    /* load screen1 when first startup */
 
-  /* 创建LVGL定时器事件 */
-  /* 注意：创建前确认TIM6已经启用并且HAL_TIM_Base_Start_IT()已经调用！*/
+  /* create LVGL timer */
+  /* NOTE: confirm TIM6 is enabled and STARTED! */
   temp_timer = lv_timer_create(temp_timer_update_callback, TEMP_SAMPLING_TIME, 0);
   /* USER CODE END 2 */
 
@@ -285,7 +299,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-    lv_timer_handler();
+    lv_timer_handler();   /* DO NOT delete this! */
     delay_ms(5);
   }
   /* USER CODE END 3 */
